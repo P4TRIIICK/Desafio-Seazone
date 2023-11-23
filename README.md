@@ -1,5 +1,5 @@
 # Desafio-Seazone <h1>
->Para a elaboração dessas questões, foram utilizadas as bibliotecas pandas para manipulação e análise de dados, juntamente com matplotlib para a construção de gráficos. O estilo visual adotado nos gráficos foi o 'fivethirtyeight'
+> Para a elaboração dessas questões, foram utilizadas as bibliotecas pandas para manipulação e análise de dados, juntamente com matplotlib para a construção de gráficos. O estilo visual adotado nos gráficos foi o 'fivethirtyeight'
 ## Limpeza de dados <h2>
 > Nessa etapa foi realizada algumas alterações nos arquivos "Data/desafio_details.csv" e "Data/desafio_ratings.csv"
 
@@ -124,3 +124,173 @@ plt.style.use('fivethirtyeight')
 csvData1 = pd.read_csv("Data/desafio_details_new.csv", encoding='latin-1', sep=';')
 csvData2 = pd.read_csv("Data/desafio_ratings_new.csv", encoding='latin-1', sep=';')
 ~~~
+Posteriormente, ocorreu a fusão das duas tabelas utilizando o método **.merge()**, onde foi especificado o parâmetro 'inner' para juntar apenas as linhas comuns em relação à coluna 'hotel_id'. Em seguida, foram removidas as linhas duplicadas com base na coluna 'hotel_id'. Após esse processo, csvData4 recebeu um novo **pd.DataFrame()** contendo apenas as colunas necessárias para a análise
+~~~python
+#Unindo as duas tabelas em uma unica e atribuindo a uma váriavel
+csvData3 = pd.merge(csvData2, csvData1, how='inner', on=['hotel_id'])
+
+#Removendo linhas repetidas 
+csvData3 = csvData3.drop_duplicates(subset='hotel_id')
+
+#Armazenando as colunas que serão necesárias para a análise 
+csvData4 = pd.DataFrame(csvData3, columns=['hotel_id','city_name' , 'number_of_ratings'])
+~~~
+Para calcular a quantidade de avaliações por cidade, foi utilizado o método **.groupby()** para somar o número de 'number_of_ratings' em relação à 'city_name'. Em seguida, foi aplicado um filtro para selecionar as cinco principais cidades com o maior número de avaliações, seguido por uma ordenação utilizando o método **.sort_values()**
+~~~python
+#Criando uma tabela com a contagem de avaliações por cidade
+cidades_avaliadas1 = csvData4.groupby(['city_name'], as_index=False)['number_of_ratings'].sum()
+
+#Estabeleci um filtro para pegar as 5 cidades com mais avaliações
+filtro = cidades_avaliadas1['number_of_ratings'] > 50
+cidades_avaliadas2 = cidades_avaliadas1[filtro]
+
+#Ordenei a tabela em ordem do mais avaliado para o menos avaliado
+cidades_avaliadas2.sort_values(["number_of_ratings"], axis=0, ascending=[False], inplace=True)
+~~~
+Para concluir, foram armazenadas as colunas desejadas em variáveis e, em seguida, elaborou-se a construção de um gráfico com base nesses dados
+~~~python
+#Armazenando dados para o gráfico
+avaliacao = cidades_avaliadas2['number_of_ratings']
+cidades = cidades_avaliadas2['city_name']
+
+#Gráfico
+plt.figure(figsize=(6,2))
+plt.title('Cidades com mais avaliações'); plt.xlabel('Valor')
+plt.barh(cidades, avaliacao, color='#0099ff', )
+#Exibição do gráfico
+plt.show()
+~~~
+![Gráfico](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/a7781563-7f07-47a0-93f6-03fef5b622c8)
+## 4. Quais cidades têm a maior média de avaliações? E a menor média? <h5>
+Padrão
+~~~python
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('fivethirtyeight')
+
+#Armazenando tabelas em variáveis 
+csvData1 = pd.read_csv("Data/desafio_details_new.csv", encoding='latin-1', sep=';')
+csvData2 = pd.read_csv("Data/desafio_ratings_new.csv", encoding='latin-1', sep=';')
+
+#Alocar somente as colunas necessárias para a análise
+csvData3 = pd.DataFrame(csvData1, columns=['hotel_name', 'city_name'])
+csvData4 = pd.DataFrame(csvData2, columns=['Total', 'hotel_name'])
+
+#Unir as duas listas para pegar somente as listangens com url no booking.com
+csvData5 = pd.merge(csvData3, csvData4, how='inner', on=['hotel_name'])
+
+#Removendo linhas repetidas 
+csvData5 = csvData5.drop_duplicates(subset='hotel_name')
+~~~
+Em seguida, realizou-se um filtro para remover as linhas da coluna 'Total' que estavam vazias, aprimorando a análise. Logo após, utilizando o método **.groupby()**, calculou-se a média da coluna 'Total' e atribuiu-se esse valor a cada cidade na tabela. As cidades foram então ordenadas para facilitar a observação dos dados
+~~~python
+
+#Filtro para excluir os locais sem avaliação
+filtro = csvData5['Total'] > 0
+csvData5 = csvData5[filtro]
+
+#Criando uma tabela com a contagem de avaliações por cidade
+cidades_avaliadas1 = csvData5.groupby(['city_name'], as_index=False)['Total'].mean()
+
+#Ordenei a tabela em ordem do mais avaliado para o menos avaliado
+cidades_avaliadas1.sort_values(["Total"], axis=0,ascending=[False], inplace=True)
+~~~
+E para finalizar, ocorreu o armazenamento das colunas necessárias para a construção do gráfico, seguido pela elaboração do próprio gráfico
+~~~python
+#Selecionando colunas específicas
+avaliacao = cidades_avaliadas1['Total']
+cidades = cidades_avaliadas1['city_name']
+
+#Gráfico
+plt.figure(figsize=(8, 6))
+plt.bar(cidades, avaliacao)
+plt.xticks(rotation=80)
+plt.xlabel('Cidade')
+plt.ylabel('Média')
+plt.title('Cidades com Maior e Menor Média de Avaliações')
+plt.tight_layout()
+plt.show()
+~~~
+![Gráfico](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/cdc220e3-b2ad-498c-8202-24279a268328)
+
+#### a. Existe alguma explicação para isso? Conjecture. <h6>
+> A prevalência de anúncios em Florianópolis influencia uma média inferior, em contraste
+com Brasília,Angra dos Reis e Ilhéus, que, apesar de contar com poucos anúncios,
+destacam-se por avaliações excepcionais. Nesse contexto, Brasília,Angra dos Reis e
+Ilhéus alcançaram a primeira posição devido à qualidade superior de seus escassos
+anúncios. Por outro lado, em Camboriú, apesar do número reduzido de anúncios, a média
+de avaliações não se revela positiva.
+
+## 8. O que você pode inferir sobre as notas dos imóveis? <h10>
+> As avaliações dos imóveis refletem a importância da localização, mas também revelam a
+necessidade de uma abordagem equilibrada para atender às expectativas dos hóspedes.
+Embora propriedades bem localizadas geralmente recebem notas mais altas,
+características como comodidades, limpeza e custo-benefício desempenham papéis
+cruciais. Uma localização excelente pode, em parte, compensar avaliações menos
+favoráveis em outras categorias. Além disso, a presença de WiFi gratuito emerge como um
+fator significativo nas avaliações, indicando a valorização da conectividade pelos
+hóspedes. A análise detalhada também revela variações nas avaliações entre diferentes
+tipos de acomodações e a influência do número de avaliações na confiabilidade dos
+resultados. Essas nuances destacam a importância de uma gestão holística e
+personalizada para garantir avaliações positivas e a satisfação duradoura dos clientes.
+
+## 9. Quais são os anúncios que te parecem críticos? Explique. <h11>
+> Anúncios com avaliações persistentemente baixas são considerados críticos, sinalizando a
+presença de questões substanciais que têm um impacto significativo e negativo na
+experiência e satisfação dos hóspedes. Essas avaliações indicam não apenas a existência
+de problemas, mas também a necessidade urgente de intervenção e melhoria.
+
+## 10. Quais outras análises você faria desses dados? Use sua criatividade <h12>
+> Uma análise pertinente envolveria a comparação entre 'room_surface_in_m2' e
+'comodidades', a fim de investigar se o tamanho de uma hospedagem tem impacto em
+suas avaliações. Além disso, considerar a relação entre 'accommodation_type' e
+'number_of_ratings', somando a quantidade de avaliações por tipo, proporciona insights
+sobre tendências preferenciais entre apartamentos e casas, ajudando a entender as
+preferências dos hóspedes em relação ao número de avaliações recebidas.
+
+## 11. Como você projetaria um dashboard para mostrar essas informações? <h13>
+>O dashboard foi realizado no Power BI e o arquivo se chama **"SeazoneChallenge.pbix"**
+
+![Dashboard](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/48d51acb-971f-45c2-bf95-8f8d37d21514)
+![Dashboard](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/b85fd255-629f-4239-9a25-1bc6f2790f5c)
+
+## 12. Quais outras informações/dados você relacionaria com essas bases, caso tivesse acesso? <h14>
+> ● Estação do Ano, para explorar se as estações do ano afetam as avaliações,
+considerando fatores climáticos ou eventos sazonais que possam influenciar a
+experiência dos hóspedes.
+
+> ● Preços médios, analisando se os hóspedes estão procurando hospedagens por
+localização ou preço ou até mesmo um meio termo entre os dois
+
+> ● Comentários dos hóspedes, visando encontrar os pontos que prejudicam a
+avaliação de um local e consecutivamente melhorar esse ponto.
+
+> ● Tipo de Viagem, com o objetivo diferenciar as avaliações com base no tipo de
+viagem (negócios, lazer, familiar) para entender as expectativas específicas de cada
+categoria de hóspede.
+
+## 13. (Extra) Com base nesses dados e nos anúncios fornecidos, como você melhoraria as notas? <h15>
+> Investir em utensílios aprimora significativamente as notas de conforto, proporcionando aos
+hóspedes uma experiência mais acolhedora. Oferecer uma conexão WiFi rápida e
+confiável é uma estratégia eficaz para atender às expectativas dos hóspedes, garantindo
+conectividade sem interrupções. Uma limpeza eficiente não apenas torna o local mais
+agradável, mas também cria a possibilidade de fidelizar o cliente, incentivando seu retorno.
+Destacar pontos turísticos próximos ao local é uma prática que enriquece a experiência do
+hóspede, proporcionando informações valiosas sobre as atrações ao redor. Além disso, a
+implementação de promoções especiais não apenas atrai mais pessoas para o local, mas
+também cria oportunidades para experiências diferenciadas, incentivando o interesse e a
+satisfação dos visitantes.
+ 
+## Feedback sobre o desafio <h16>
+> O desafio me cativou profundamente, pois não se tratava de uma tarefa fácil, acessível a
+qualquer um, mas também não era excessivamente difícil. Consegui completá-lo antes do
+prazo estimado, o que reforçou minha confiança, e destacou minhas habilidades na área
+de análise de dados, utilizando Python e a biblioteca Pandas para uma análise abrangente.
+É justo admitir que enfrentei alguns obstáculos durante a resolução de certas questões,
+especialmente na questão 6, onde inicialmente tentei utilizar as funções
+"pd.get_dummies()" e ".corr()", mas acabei gerando uma série de colunas nos dados.
+Diante desse desafio, optei por uma abordagem diferente que se mostrou mais eficaz.
+Expresso minha gratidão à Seazone por proporcionar essa experiência enriquecedora, que
+ampliou significativamente meu conhecimento. Estou ansioso para enfrentar novos
+desafios semelhantes, pois acredito que cada um deles contribui para meu crescimento
+profissional e pessoal
