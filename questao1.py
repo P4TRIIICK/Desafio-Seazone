@@ -8,8 +8,8 @@ csvData = pd.read_csv("Data/desafio_details_new.csv", encoding='latin-1', sep = 
 csvData2 = pd.read_csv("Data/desafio_ratings_new.csv", encoding='latin-1', sep = ';')
 
 #Alocar somente as colunas necessárias para a análise
-csvData3 = pd.DataFrame(csvData, columns=['hotel_name', 'city_name', 'accommodation_type'])
-csvData4 = pd.DataFrame(csvData2, columns=['url', 'number_of_ratings', 'hotel_name'])
+csvData3 = pd.DataFrame(csvData, columns=['hotel_name', 'city_name'])
+csvData4 = pd.DataFrame(csvData2, columns=['url', 'hotel_name'])
 
 #Unir as duas listas para pegar somente as listangens com url no booking.com
 csvData5 = pd.merge(csvData3, csvData4, how='inner', on=['hotel_name'])
