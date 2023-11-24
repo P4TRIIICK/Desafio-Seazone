@@ -220,6 +220,16 @@ destacam-se por avaliações excepcionais. Nesse contexto, Brasília,Angra dos R
 Ilhéus alcançaram a primeira posição devido à qualidade superior de seus escassos
 anúncios. Por outro lado, em Camboriú, apesar do número reduzido de anúncios, a média
 de avaliações não se revela positiva.
+## 5. Existem correlações entre as características de um anúncio e a sua localização? a. Quais? Explique. <h7>
+> Sim, todas as características de um imóvel exercem influência em sua avaliação, e a
+localização é uma peça chave nesse quebra-cabeça. Mesmo que o imóvel apresente
+excelentes comodidades, limpeza e outros atrativos, obtendo avaliações positivas, a
+proximidade em relação ao centro ou a pontos turísticos específicos pode impactar
+negativamente em sua taxa de ocupação. É possível que, apesar das qualidades do
+imóvel, a localização menos estratégica resulte em uma ocupação abaixo do desejado,
+demonstrando a importância de considerar não apenas as características internas, mas
+também a acessibilidade e conveniência proporcionadas pela localização do imóvel.
+## 6. Existem relações entre a nota do anúncio e os recursos disponíveis no imóvel? a. Quais? Explique. <h8>
 
 ## 8. O que você pode inferir sobre as notas dos imóveis? <h10>
 > As avaliações dos imóveis refletem a importância da localização, mas também revelam a
@@ -248,13 +258,91 @@ suas avaliações. Além disso, considerar a relação entre 'accommodation_type
 sobre tendências preferenciais entre apartamentos e casas, ajudando a entender as
 preferências dos hóspedes em relação ao número de avaliações recebidas.
 
-## 11. Como você projetaria um dashboard para mostrar essas informações? <h13>
+### Código da segunda ideia: <h13>
+
+Padrão:
+~~~python
+import pandas as pd
+import matplotlib.pyplot as plt
+plt.style.use('fivethirtyeight')
+
+#Armazenando tabelas em variáveis 
+csvData1 = pd.read_csv("Data/desafio_details_new.csv", encoding='latin-1', sep=';')
+csvData2 = pd.read_csv("Data/desafio_ratings_new.csv", encoding='latin-1', sep=';')
+
+#Alocar somente as colunas necessárias para a análise
+csvData3 = pd.DataFrame(csvData1, columns=['hotel_name', 'accommodation_type'])
+csvData4 = pd.DataFrame(csvData2, columns=['number_of_ratings', 'hotel_name'])
+
+#Unir as duas listas 
+csvData5 = pd.merge(csvData3, csvData4, how='inner', on=['hotel_name'])
+
+#Removendo linhas repetidas 
+csvData5 = csvData5.drop_duplicates(subset='hotel_name')
+~~~
+Um filtro foi aplicado para excluir as listagens que não possuíam avaliações
+~~~python
+#Filtro para excluir os locais sem avaliação
+filtro = csvData5['number_of_ratings'] > 0
+csvData5 = csvData5[filtro]
+~~~
+Posteriormente, procedeu-se inicialmente à coleta de avaliações por tipo de acomodação, seguida pela contagem das listagens com seus respectivos tipos de acomodação e, finalmente, à ordenação das tabelas
+~~~python
+
+#Contando a quantidade de avaliações por tipo de acomodação
+Quantidade_AV = csvData5.groupby(['accommodation_type'], as_index=False)['number_of_ratings'].sum()
+
+#Contando a quantidade de acomodações 
+Quantidade_AC = csvData5['accommodation_type'].value_counts().reset_index()
+
+#Ordenando as linhas da coluna
+Quantidade_AV.sort_values(["number_of_ratings"], axis=0,ascending=[True], inplace=True)
+Quantidade_AC.sort_values(["count"], axis=0,ascending=[True], inplace=True)
+~~~
+O primeiro gráfico gerado é refente a quantidade de avaliações por tipo de acomodação
+~~~python
+#Selecionando colunas específicas
+avaliacao = Quantidade_AV['number_of_ratings']
+cidades = Quantidade_AV['accommodation_type']
+
+
+#Gráfico da quantidade de avaliações por acomodação
+plt.figure(figsize=(8, 6))
+plt.bar(cidades, avaliacao)
+plt.xticks(rotation=80)
+plt.xlabel('Tipo de acomodação')
+plt.ylabel('Quantidade')
+plt.title('Tipos de acomodações com mais avaliações')
+plt.tight_layout()
+plt.show()
+~~~
+![Gráfico](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/062801f5-bad2-4533-a1fd-97a6a2848e88)
+
+Na segunda etapa, foi realizada a análise da quantidade de tipos de acomodação presentes na tabela
+~~~python
+#Gráfico da quantidade de acomodações listadas
+plt.figure(figsize=(8, 6))
+plt.bar(Quantidade_AC['accommodation_type'], Quantidade_AC['count'])
+plt.xticks(rotation=80)
+plt.xlabel('Tipo de acomodação')
+plt.ylabel('Quantidade')
+plt.title('Tipos de acomodações com mais avaliações')
+plt.tight_layout()
+plt.show()
+~~~
+![AV2](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/2481e4da-135d-4eec-8ead-629e8d87fd5d)
+
+Com base nesses dois gráficos, é possível observar que, mesmo nos resorts com poucas listagens, esse tipo de acomodação se destaca como o que recebe a maior quantidade de avaliações, ao contrário dos apartamentos, que possuem um grande número de listagens, mas não necessariamente uma quantidade proporcional de avaliações.
+
+É importante destacar que, embora o número de avaliações forneça insights valiosos, não é possível afirmar com certeza que os resorts são preferidos pelos hóspedes, uma vez que sempre existe uma porcentagem que opta por não avaliar a hospedagem. Para obter resultados mais precisos, seria recomendável considerar o número total de pessoas que passaram pela hospedagem, proporcionando uma métrica mais abrangente.
+
+## 11. Como você projetaria um dashboard para mostrar essas informações? <h14>
 >O dashboard foi realizado no Power BI e o arquivo se chama **"SeazoneChallenge.pbix"**
 
 ![Dashboard](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/48d51acb-971f-45c2-bf95-8f8d37d21514)
 ![Dashboard](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/b85fd255-629f-4239-9a25-1bc6f2790f5c)
 
-## 12. Quais outras informações/dados você relacionaria com essas bases, caso tivesse acesso? <h14>
+## 12. Quais outras informações/dados você relacionaria com essas bases, caso tivesse acesso? <h15>
 > ● Estação do Ano, para explorar se as estações do ano afetam as avaliações,
 considerando fatores climáticos ou eventos sazonais que possam influenciar a
 experiência dos hóspedes.
@@ -269,7 +357,7 @@ avaliação de um local e consecutivamente melhorar esse ponto.
 viagem (negócios, lazer, familiar) para entender as expectativas específicas de cada
 categoria de hóspede.
 
-## 13. (Extra) Com base nesses dados e nos anúncios fornecidos, como você melhoraria as notas? <h15>
+## 13. (Extra) Com base nesses dados e nos anúncios fornecidos, como você melhoraria as notas? <h16>
 > Investir em utensílios aprimora significativamente as notas de conforto, proporcionando aos
 hóspedes uma experiência mais acolhedora. Oferecer uma conexão WiFi rápida e
 confiável é uma estratégia eficaz para atender às expectativas dos hóspedes, garantindo
@@ -281,7 +369,7 @@ implementação de promoções especiais não apenas atrai mais pessoas para o l
 também cria oportunidades para experiências diferenciadas, incentivando o interesse e a
 satisfação dos visitantes.
  
-## Feedback sobre o desafio <h16>
+## Feedback sobre o desafio <h17>
 > O desafio me cativou profundamente, pois não se tratava de uma tarefa fácil, acessível a
 qualquer um, mas também não era excessivamente difícil. Consegui completá-lo antes do
 prazo estimado, o que reforçou minha confiança, e destacou minhas habilidades na área
