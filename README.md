@@ -13,7 +13,7 @@
 
 *[Questão 6](https://github.com/P4TRIIICK/Desafio-Seazone#6-existem-rela%C3%A7%C3%B5es-entre-a-nota-do-an%C3%BAncio-e-os-recursos-dispon%C3%ADveis-no-im%C3%B3vel-a-quais-explique-)
 
-*[Questão 7]()
+*[Questão 7](https://github.com/P4TRIIICK/Desafio-Seazone#7-existe-alguma-rela%C3%A7%C3%A3o-entre-a-nota-recebida-e-a-localiza%C3%A7%C3%A3o-a-quais-explique-)
 
 *[Questão 8](https://github.com/P4TRIIICK/Desafio-Seazone#8-o-que-voc%C3%AA-pode-inferir-sobre-as-notas-dos-im%C3%B3veis-)
 
