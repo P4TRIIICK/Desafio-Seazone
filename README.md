@@ -1,4 +1,34 @@
 # Desafio-Seazone <h1>
+*[Limpeza de Dados](https://github.com/P4TRIIICK/Desafio-Seazone/edit/master/README.md#limpeza-de-dados-)
+
+*[Questão 1](https://github.com/P4TRIIICK/Desafio-Seazone#1-ordene-as-cidades-em-ordem-crescente-de-n%C3%BAmero-de-listings-)
+
+*[Questão 2](https://github.com/P4TRIIICK/Desafio-Seazone#2-ordene-as-cidades-em-ordem-decrescente-de-metros-quadrados-)
+
+*[Questão 3](https://github.com/P4TRIIICK/Desafio-Seazone#3-quais-cidades-t%C3%AAm-mais-avalia%C3%A7%C3%B5es-)
+
+*[Questão 4](https://github.com/P4TRIIICK/Desafio-Seazone#4-quais-cidades-t%C3%AAm-a-maior-m%C3%A9dia-de-avalia%C3%A7%C3%B5es-e-a-menor-m%C3%A9dia-)
+
+*[Questão 5](https://github.com/P4TRIIICK/Desafio-Seazone#5-existem-correla%C3%A7%C3%B5es-entre-as-caracter%C3%ADsticas-de-um-an%C3%BAncio-e-a-sua-localiza%C3%A7%C3%A3o-a-quais-explique-)
+
+*[Questão 6](https://github.com/P4TRIIICK/Desafio-Seazone#6-existem-rela%C3%A7%C3%B5es-entre-a-nota-do-an%C3%BAncio-e-os-recursos-dispon%C3%ADveis-no-im%C3%B3vel-a-quais-explique-)
+
+*[Questão 7]()
+
+*[Questão 8](https://github.com/P4TRIIICK/Desafio-Seazone#8-o-que-voc%C3%AA-pode-inferir-sobre-as-notas-dos-im%C3%B3veis-)
+
+*[Questão 9](https://github.com/P4TRIIICK/Desafio-Seazone#9-quais-s%C3%A3o-os-an%C3%BAncios-que-te-parecem-cr%C3%ADticos-explique-)
+
+*[Questão 10](https://github.com/P4TRIIICK/Desafio-Seazone#10-quais-outras-an%C3%A1lises-voc%C3%AA-faria-desses-dados-use-sua-criatividade-)
+
+*[Questão 11](https://github.com/P4TRIIICK/Desafio-Seazone#11-como-voc%C3%AA-projetaria-um-dashboard-para-mostrar-essas-informa%C3%A7%C3%B5es-)
+
+*[Questão 12](https://github.com/P4TRIIICK/Desafio-Seazone#12-quais-outras-informa%C3%A7%C3%B5esdados-voc%C3%AA-relacionaria-com-essas-bases-caso-tivesse-acesso-)
+
+*[Questão 13](https://github.com/P4TRIIICK/Desafio-Seazone#13-extra-com-base-nesses-dados-e-nos-an%C3%BAncios-fornecidos-como-voc%C3%AA-melhoraria-as-notas-)
+
+*[Feedback](https://github.com/P4TRIIICK/Desafio-Seazone#feedback-sobre-o-desafio-)
+
 > Para a elaboração dessas questões, foram utilizadas as bibliotecas pandas para manipulação e análise de dados, juntamente com matplotlib para a construção de gráficos. O estilo visual adotado nos gráficos foi o 'fivethirtyeight'
 ## Limpeza de dados <h2>
 > Nessa etapa foi realizada algumas alterações nos arquivos "Data/desafio_details.csv" e "Data/desafio_ratings.csv"
@@ -230,6 +260,193 @@ imóvel, a localização menos estratégica resulte em uma ocupação abaixo do 
 demonstrando a importância de considerar não apenas as características internas, mas
 também a acessibilidade e conveniência proporcionadas pela localização do imóvel.
 ## 6. Existem relações entre a nota do anúncio e os recursos disponíveis no imóvel? a. Quais? Explique. <h8>
+>Nesta questão, abordei a correlação entre "nota" e "recursos disponíveis" de duas maneiras distintas, registrando cada abordagem em **dois arquivos separados**, nomeados "questao6.py" e "questao6b.py". Essa abordagem foi adotada devido à suspeita de algum equívoco na aplicação da correlação entre essas variáveis. Dessa forma, busquei assegurar uma análise abrangente, explorando diferentes métodos para garantir a precisão dos resultados.
+
+Ambos os arquivos compartilham uma estrutura inicial idêntica, divergindo apenas na seção correspondente ao "questaob.py", que incorpora a biblioteca **seaborn (sns)** para criar a matriz de correlação. As etapas comuns incluem a importação das bibliotecas necessárias, a seleção das colunas relevantes para análise, a eliminação de duplicatas com base na coluna "hotel_name" e a remoção de linhas sem informações, tendo como critério a avaliação de "conforto"
+~~~python
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+plt.style.use('fivethirtyeight')
+
+#Armazenando tabelas em variáveis 
+csvData1 = pd.read_csv("Data\desafio_details_new.csv", encoding='latin-1', sep=';')
+csvData2 = pd.read_csv("Data\desafio_ratings_new.csv", encoding='latin-1', sep=';')
+
+#Alocar somente as colunas necessárias para a análise
+csvData3 = pd.DataFrame(csvData1, columns=['hotel_name', 'room_facilities'])
+csvData4 = pd.DataFrame(csvData2, columns=['Conforto','Comodidades','Limpeza','Custo-benefício','Localização','Total','WiFi gratuito','hotel_name'])
+
+#Unindo as duas tabelas em uma unica e atribuindo a uma váriavel
+csvData5 = pd.merge(csvData3, csvData4, how='inner', on=['hotel_name'])
+
+#Removendo linhas repetidas
+csvData5 = csvData5.drop_duplicates(subset='hotel_name')
+
+#Removendo linhas sem avaliações
+filtro = csvData5['Conforto'] > 0
+csvAux = csvData5[filtro]
+~~~
+Agora, ao iniciar a análise com o arquivo "questao6.py", realizou-se a conversão de cada palavra de uma linha em uma nova coluna com o método **.explode()**, para facilitar a análise. Posteriormente, efetuou-se uma comparação entre os utensílios da hospedagem e as notas de conforto, visando obter a média de pontuação para cada utensílio. Em seguida, os resultados foram ordenados em ordem decrescente para uma melhor visualização e interpretação
+~~~python
+#Transformando cada utensílio de uma coluna em uma nova linha
+csvData5['room_facilities'] = csvData5['room_facilities'].apply(lambda x: str(x).replace('[','').replace(']','').replace("'",'').split(','))
+csvAux = csvData5.explode('room_facilities')
+
+#Formatando a escrita das linhas para não haver error na hora de comparar
+csvAux['room_facilities'] = csvAux['room_facilities'].str.strip()
+
+#Armazenando a comparação entre cada utensílio por nota 
+cidades_avaliadas1 = csvAux.groupby(['room_facilities'], as_index=False)['Conforto'].mean()
+
+#Ordenei a tabela 
+cidades_avaliadas1.sort_values(["Conforto"], axis=0,ascending=[False], inplace=True)
+~~~
+Logo em seguida, aplicamos dois filtros para a geração de dois gráficos distintos, selecionando os utensílios com as maiores médias em um filtro e, em outro, os utensílios com as menores médias. Esses resultados são então armazenados em novas variáveis para facilitar análises subsequentes
+~~~python
+
+#Filtro para obter os utensílios com melhores médias
+filtro = cidades_avaliadas1['Conforto'] > 9.5
+Aux1 = cidades_avaliadas1[filtro]
+
+#Filtro para obter os utensílios com piores médias 
+filtro2 = cidades_avaliadas1['Conforto']  < 8
+Aux2 = cidades_avaliadas1[filtro2]
+
+#Selecionando colunas específicas
+avaliacao = Aux1['Conforto']
+cidades = Aux1['room_facilities']
+avaliacao2 = Aux2['Conforto']
+cidades2 = Aux2['room_facilities']
+~~~
+E para concluir, realiza-se a criação de dois gráficos, um destacando os utensílios com as melhores médias e outro enfocando os utensílios com as piores médias. Isso permite uma observação visual das tendências e variações nas avaliações, fornecendo insights valiosos para a análise
+~~~python
+#Gráfico dos utensílios com maiores médias
+plt.figure(figsize=(8,4))
+plt.title('A média das notas de "Conforto" em relação aos utensílios'); plt.xlabel('Média')
+plt.barh(cidades, avaliacao, color='#0099ff', )
+plt.show()
+
+#Gráfico dos utensílios com piores médias
+plt.figure(figsize=(8,4))
+plt.title('A média das notas de "Conforto" em relação aos utensílios'); plt.xlabel('Média')
+plt.barh(cidades2, avaliacao2, color='#0099ff', )
+plt.show()
+~~~
+![Melhor](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/3abd3610-50e1-41f1-a6a4-65db1b94d799)
+![Pior](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/f94a6132-8044-4d47-ae06-b6f785463e30)
+Com isso se ver que utensílios como "telefone" e "cartão de acesso" agradam mais os hospedes do que "fontes de monóxido de carbono" 
+
+>Agora, ao iniciar o arquivo 'questao6b.py', onde tenho incertezas sobre sua precisão. Como mencionado anteriormente, o início é semelhante entre os dois scripts
+Inicialmente, cada palavra presente nas linhas é transformada em uma nova coluna através do método **.explode()** para simplificar a análise. Em seguida, é criado um novo DataFrame contendo os dados necessários
+~~~python
+#Transformando cada utensílio de uma coluna em uma nova linha
+csvData5['room_facilities'] = csvData5['room_facilities'].apply(lambda x: str(x).replace('[','').replace(']','').replace("'",'').split(','))
+csvAux = csvData5.explode('room_facilities')
+csvAux['room_facilities'] = csvAux['room_facilities'].str.strip()
+#Novo dataframe que contém apenas os hoteis e os utensílios das salas
+csvAux2 = csvAux[['Conforto', 'room_facilities']]
+~~~~
+Para simplificar a criação da matriz de correlação, utilizamos o método pd.get_dummies, que converte a coluna 'room_facilities' em valores binários (0 ou 1). Isso é feito para evitar discrepâncias nos números atribuídos a cada utensílio, o que poderia levar o método de correlação a interpretar erroneamente a importância relativa entre eles, especialmente quando valores mais altos poderiam ser interpretados como indicativos de maior importância
+~~~python
+# Colunas dummy para cada utensílio. O valor será 1 se o hotel possuir esse utensílio e 0 caso contrário
+csvAux2 = pd.get_dummies(csvAux2, columns=['room_facilities'], prefix='', prefix_sep='')
+~~~
+Esse trecho de código realiza uma análise de correlação entre a classificação de conforto (contida na coluna 'Conforto') e a presença de cada utensílio nas salas de um hotel. O método utilizado para calcular essa correlação é a correlação de Spearman, uma medida que avalia relações monotônicas, ou seja, relações que não precisam ser necessariamente lineares, mas mantêm uma consistência de tendência.
+A função corrwith é utilizada para calcular a correlação entre as colunas que representam a presença de utensílios e a coluna 'Conforto'. Após esse cálculo, a matriz de correlação resultante é ordenada em ordem decrescente. Isso significa que os utensílios com maior correlação positiva com a classificação de conforto estarão no topo da lista, fornecendo insights sobre quais itens podem ter uma influência mais significativa na percepção de conforto pelos usuários
+~~~python
+# Matriz de correlação entre a classificação de conforto e a presença de cada utensílio nas salas
+corrMatrix = csvAux2[csvAux2.columns[1:]].corrwith(csvAux2['Conforto'], method='spearman')
+corrMatrix = corrMatrix.sort_values(ascending=False)
+~~~
+Por fim, o código cria uma visualização da matriz de correlação por meio de um gráfico, utilizando a biblioteca seaborn (sns). Essa representação gráfica oferece uma perspectiva mais intuitiva das relações entre a presença dos utensílios das hospedagens e a classificação de conforto.
+~~~python
+# Exibir a matriz de correlação ordenada em ordem decrescente
+plt.figure(figsize=(8, 12))
+
+# Converte a série em um DataFrame
+correlation_df = pd.DataFrame({'Correlation': corrMatrix.head(10)})
+
+# Transpõe o DataFrame
+correlation_df = correlation_df.T
+
+sns.heatmap(correlation_df, annot=True, cmap='coolwarm', linewidths=.5, cbar_kws={'label': 'Correlation'})
+plt.title('Correlação com a Nota total')
+plt.show()
+~~~
+![Correlacao](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/c53021be-586f-46b6-b690-b4aa5ab550ea)
+
+A correlação de Spearman é uma medida que varia de -1 a 1. Aqui está a interpretação dos valores:
+
+**Correlação de Spearman = 1: Correlação Positiva Perfeita**
+Neste caso, quando uma variável aumenta, a outra também aumenta de forma monotônica. Isso indica uma relação positiva perfeita entre as variáveis. Em termos práticos, se uma variável está relacionada à outra por uma função monotônica crescente, a correlação de Spearman será 1.
+
+**Correlação de Spearman = 0: Ausência de Correlação**
+Quando o valor é 0, não há uma relação sistemática monotônica entre as variáveis. Isso significa que as mudanças em uma variável não estão relacionadas de maneira consistente às mudanças na outra.
+
+**Correlação de Spearman = -1: Correlação Negativa Perfeita**
+Neste cenário, quando uma variável aumenta, a outra diminui de forma monotônica. Indica uma relação negativa perfeita entre as variáveis. Se uma variável está relacionada à outra por uma função monotônica decrescente, a correlação de Spearman será -1.
+
+**Valores Intermediários: Correlações Moderadas e Fracas**
+Valores entre -1 e 1 indicam correlações moderadas. Quanto mais próximo de -1 ou 1, mais forte é a relação monotônica. Se o valor estiver próximo de 0, a relação é mais fraca.
+
+O valor mais elevado obtido, que corresponde a "ferro de passar roupa" com uma correlação de 0.035, sugere uma associação extremamente fraca ou praticamente inexistente entre a presença desse utensílio nas acomodações e a nota de conforto. A correlação de Spearman positiva próxima de zero indica que não há uma relação monotônica significativa entre essas variáveis. Em termos práticos, isso sugere que a presença ou ausência do "ferro de passar roupa" não está fortemente vinculada à percepção de conforto, conforme avaliada pelas notas atribuídas. 
+## 7. Existe alguma relação entre a nota recebida e a localização? a. Quais? Explique. <h9>
+>Para realizar esta análise, utilizamos a biblioteca **nltk** para identificar as palavras mais frequentes nos anúncios com avaliações 10
+
+Inicialmente, coletamos as colunas necessárias para a análise, ativamos a biblioteca nltk e removemos dados duplicados das colunas, utilizando a coluna 'hotel_name' como referência
+~~~python
+import pandas as pd
+from nltk.tokenize import word_tokenize
+from nltk.probability import FreqDist
+import matplotlib.pyplot as plt
+import nltk
+
+# Certifique-se de ter o nltk baixado. Execute esta linha apenas uma vez.
+nltk.download('punkt')
+
+# Ler o CSV e selecionar as colunas relevantes
+csvData1 = pd.read_csv("Data/desafio_ratings_new.csv", encoding='latin-1', sep=';')
+csvData1 = pd.DataFrame(csvData1, columns=['Localização', 'hotel_name'])
+
+# Remover linhas duplicadas
+csvData2 = csvData1.drop_duplicates(subset='hotel_name')
+~~~
+Posteriormente, aplicamos um filtro para coletar as listagens com nota 10, utilizando como base a avaliação de localização, e, em seguida, transformamos cada palavra das listagens em uma nova linha da coluna, padronizando todas as linhas em minúsculas
+~~~python
+#Filtro para pegar os hoteis com somente avaliação 10
+filtro = csvData2['Localização'] > 9.9
+csvData2 = csvData2[filtro]
+
+#passar cada palavra de um anuncio para uma coluna e formatar a escrita
+csvData2['hotel_name'] = csvData2['hotel_name'].apply(lambda x: str(x).replace('/','').split(' '))
+csvData3 = csvData2.explode('hotel_name')
+csvData3['hotel_name'] = csvData3['hotel_name'].str.strip()
+csvData3['hotel_name'] = csvData3['hotel_name'].str.lower()
+
+# Juntar todas as strings em uma única string
+all_hotel_names = ' '.join(csvData3['hotel_name'])
+~~~
+Nesta linha, os nomes dos hotéis contidos na variável all_hotel_names são tokenizados, ou seja, divididos em palavras individuais. A função word_tokenize da biblioteca nltk é utilizada para realizar essa tarefa
+~~~python
+# Tokenizar as palavras
+words = word_tokenize(all_hotel_names)
+~~~
+Aqui, é criado um objeto FreqDist (distribuição de frequência) a partir da lista de palavras tokenizadas. Esse objeto armazenará a contagem de quantas vezes cada palavra aparece na coleção
+~~~python
+# Calcular a frequência das palavras
+freq_dist = FreqDist(words)
+~~~
+Finalizando, é gerado um gráfico de frequência para visualizar a distribuição das palavras nos anúncios. O gráfico é plotado usando a biblioteca matplotlib. O eixo x representa as palavras e o eixo y representa a frequência de cada palavra. freq_dist.plot(30, cumulative=False) plota as 30 palavras mais frequentes, e cumulative=False indica que o gráfico não deve ser cumulativo.
+~~~python
+# Plotar o gráfico de frequência
+plt.figure(figsize=(12, 6))
+plt.title('Frequência das Palavras nos anúncios')
+freq_dist.plot(30, cumulative=False)
+plt.show()
+~~~
+![Gráfico](https://github.com/P4TRIIICK/Desafio-Seazone/assets/107818715/7cdd5894-1067-4efd-ae45-03cdd64cb9d9)
+Observando as 30 palavras mais frequentes nas listagens com avaliação 10, notamos a presença proeminente de termos como "praia", "mar", "vista" e "centro". Vale ressaltar que locais nas proximidades dessas palavras frequentemente recebem avaliações mais positivas, possivelmente devido à sua proximidade a pontos turísticos ou à costa. Para alguns, a proximidade com a praia é sinônimo de qualidade e tranquilidade, refletindo-se positivamente nas avaliações
 
 ## 8. O que você pode inferir sobre as notas dos imóveis? <h10>
 > As avaliações dos imóveis refletem a importância da localização, mas também revelam a
@@ -375,9 +592,8 @@ qualquer um, mas também não era excessivamente difícil. Consegui completá-lo
 prazo estimado, o que reforçou minha confiança, e destacou minhas habilidades na área
 de análise de dados, utilizando Python e a biblioteca Pandas para uma análise abrangente.
 É justo admitir que enfrentei alguns obstáculos durante a resolução de certas questões,
-especialmente na questão 6, onde inicialmente tentei utilizar as funções
-"pd.get_dummies()" e ".corr()", mas acabei gerando uma série de colunas nos dados.
-Diante desse desafio, optei por uma abordagem diferente que se mostrou mais eficaz.
+especialmente na questão 6, onde tive bastante dificulldade de proceder com a questão.
+Diante desse desafio, optei por duas abordagem diferentes que se mostrou mais eficaz.
 Expresso minha gratidão à Seazone por proporcionar essa experiência enriquecedora, que
 ampliou significativamente meu conhecimento. Estou ansioso para enfrentar novos
 desafios semelhantes, pois acredito que cada um deles contribui para meu crescimento
