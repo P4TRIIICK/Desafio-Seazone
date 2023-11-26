@@ -1,4 +1,5 @@
 # Desafio-Seazone <h1>
+
 *[Limpeza de Dados](https://github.com/P4TRIIICK/Desafio-Seazone/edit/master/README.md#limpeza-de-dados-)
 
 *[Questão 1](https://github.com/P4TRIIICK/Desafio-Seazone#1-ordene-as-cidades-em-ordem-crescente-de-n%C3%BAmero-de-listings-)
@@ -29,7 +30,7 @@
 
 *[Feedback](https://github.com/P4TRIIICK/Desafio-Seazone#feedback-sobre-o-desafio-)
 
-> Para a elaboração dessas questões, foram utilizadas as bibliotecas pandas para manipulação e análise de dados, juntamente com matplotlib para a construção de gráficos. O estilo visual adotado nos gráficos foi o 'fivethirtyeight'
+> Para formular essas questões, foi utilizado as bibliotecas pandas para a manipulação e análise de dados, além de matplotlib e seaborn para criar gráficos. Optei pelo estilo visual 'fivethirtyeight' para os gráficos, enquanto a biblioteca nltk foi empregada na representação visual das palavras mais frequentemente utilizadas
 ## Limpeza de dados <h2>
 > Nessa etapa foi realizada algumas alterações nos arquivos "Data/desafio_details.csv" e "Data/desafio_ratings.csv"
 
@@ -302,7 +303,7 @@ cidades_avaliadas1 = csvAux.groupby(['room_facilities'], as_index=False)['Confor
 #Ordenei a tabela 
 cidades_avaliadas1.sort_values(["Conforto"], axis=0,ascending=[False], inplace=True)
 ~~~
-Logo em seguida, aplicamos dois filtros para a geração de dois gráficos distintos, selecionando os utensílios com as maiores médias em um filtro e, em outro, os utensílios com as menores médias. Esses resultados são então armazenados em novas variáveis para facilitar análises subsequentes
+Logo em seguida, aplica-se dois filtros para a geração de dois gráficos distintos, selecionando os utensílios com as maiores médias em um filtro e, em outro, os utensílios com as menores médias. Esses resultados são então armazenados em novas variáveis para facilitar análises subsequentes
 ~~~python
 
 #Filtro para obter os utensílios com melhores médias
@@ -347,7 +348,7 @@ csvAux['room_facilities'] = csvAux['room_facilities'].str.strip()
 #Novo dataframe que contém apenas os hoteis e os utensílios das salas
 csvAux2 = csvAux[['Conforto', 'room_facilities']]
 ~~~~
-Para simplificar a criação da matriz de correlação, utilizamos o método pd.get_dummies, que converte a coluna 'room_facilities' em valores binários (0 ou 1). Isso é feito para evitar discrepâncias nos números atribuídos a cada utensílio, o que poderia levar o método de correlação a interpretar erroneamente a importância relativa entre eles, especialmente quando valores mais altos poderiam ser interpretados como indicativos de maior importância
+Para simplificar a criação da matriz de correlação, utilizei o método pd.get_dummies, que converte a coluna 'room_facilities' em valores binários (0 ou 1). Isso é feito para evitar discrepâncias nos números atribuídos a cada utensílio, o que poderia levar o método de correlação a interpretar erroneamente a importância relativa entre eles, especialmente quando valores mais altos poderiam ser interpretados como indicativos de maior importância
 ~~~python
 # Colunas dummy para cada utensílio. O valor será 1 se o hotel possuir esse utensílio e 0 caso contrário
 csvAux2 = pd.get_dummies(csvAux2, columns=['room_facilities'], prefix='', prefix_sep='')
@@ -392,9 +393,9 @@ Valores entre -1 e 1 indicam correlações moderadas. Quanto mais próximo de -1
 
 O valor mais elevado obtido, que corresponde a "ferro de passar roupa" com uma correlação de 0.035, sugere uma associação extremamente fraca ou praticamente inexistente entre a presença desse utensílio nas acomodações e a nota de conforto. A correlação de Spearman positiva próxima de zero indica que não há uma relação monotônica significativa entre essas variáveis. Em termos práticos, isso sugere que a presença ou ausência do "ferro de passar roupa" não está fortemente vinculada à percepção de conforto, conforme avaliada pelas notas atribuídas. 
 ## 7. Existe alguma relação entre a nota recebida e a localização? a. Quais? Explique. <h9>
->Para realizar esta análise, utilizamos a biblioteca **nltk** para identificar as palavras mais frequentes nos anúncios com avaliações 10
+>Para realizar esta análise, utilizei a biblioteca **nltk** para identificar as palavras mais frequentes nos anúncios com avaliações 10
 
-Inicialmente, coletamos as colunas necessárias para a análise, ativamos a biblioteca nltk e removemos dados duplicados das colunas, utilizando a coluna 'hotel_name' como referência
+Inicialmente, coleta-se as colunas necessárias para a análise, ativa-se a biblioteca nltk e remove dados duplicados das colunas, utilizando a coluna 'hotel_name' como referência
 ~~~python
 import pandas as pd
 from nltk.tokenize import word_tokenize
@@ -412,7 +413,7 @@ csvData1 = pd.DataFrame(csvData1, columns=['Localização', 'hotel_name'])
 # Remover linhas duplicadas
 csvData2 = csvData1.drop_duplicates(subset='hotel_name')
 ~~~
-Posteriormente, aplicamos um filtro para coletar as listagens com nota 10, utilizando como base a avaliação de localização, e, em seguida, transformamos cada palavra das listagens em uma nova linha da coluna, padronizando todas as linhas em minúsculas
+Posteriormente, aplica-se um filtro para coletar as listagens com nota 10, utilizando como base a avaliação de localização, e, em seguida, transforma-se cada palavra das listagens em uma nova linha da coluna, padronizando todas as linhas em minúsculas
 ~~~python
 #Filtro para pegar os hoteis com somente avaliação 10
 filtro = csvData2['Localização'] > 9.9
